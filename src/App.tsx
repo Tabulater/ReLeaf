@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Leaf, Brain } from 'lucide-react';
+import { Leaf, Brain, MapPin, TrendingUp, Thermometer, Zap, Target, BarChart3 } from 'lucide-react';
 import CitySelector from './components/CitySelector';
 import HeatMap from './components/HeatMap';
 import ZoneAnalysis from './components/ZoneAnalysis';
 import EnvironmentalData from './components/EnvironmentalData';
 import ActionPlans from './components/ActionPlans';
 import ClimateImpactAnalysis from './components/ClimateImpactAnalysis';
+import ModelPerformanceDashboard from './components/ModelPerformanceDashboard';
 import { City, HeatZone, EnvironmentalData as EnvData, ActionPlan } from './types';
 import { HeatIslandPredictor } from './ml/heatIslandAnalysis';
 import { ActionPlanGenerator } from './ml/actionPlanGenerator';
@@ -31,13 +32,11 @@ function App() {
   useEffect(() => {
     const initializeModels = async () => {
       try {
-        // Set a timeout to prevent infinite loading
         const timeoutId = setTimeout(() => {
           console.warn('Model training timeout, proceeding with fallback models');
           setIsModelTraining(false);
-        }, 30000); // 30 second timeout
+        }, 60000);
 
-        // Suppress console errors from browser extensions and API failures
         const originalConsoleError = console.error;
         console.error = (...args) => {
           const message = args[0]?.toString() || '';
@@ -51,20 +50,27 @@ function App() {
               message.includes('ERR_NAME_NOT_RESOLVED') ||
               message.includes('Error fetching weather data') ||
               message.includes('Error fetching air quality data')) {
-            return; // Suppress these specific errors
+            return;
           }
           originalConsoleError.apply(console, args);
         };
 
         await predictor.initialize();
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
         await planGenerator.initialize();
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
         await climateAnalyzer.initialize();
+        await new Promise(resolve => setTimeout(resolve, 1000));
         
         await predictor.trainModel();
         setTrainingProgress(33);
+        await new Promise(resolve => setTimeout(resolve, 2000));
         
         await planGenerator.trainModel();
         setTrainingProgress(66);
+        await new Promise(resolve => setTimeout(resolve, 2000));
         
         await climateAnalyzer.trainModel();
         setTrainingProgress(100);
@@ -72,7 +78,6 @@ function App() {
         clearTimeout(timeoutId);
         setIsModelTraining(false);
         
-        // Restore original console.error
         console.error = originalConsoleError;
       } catch (error) {
         console.error('Error training models:', error);
@@ -101,6 +106,8 @@ function App() {
       const plans = await planGenerator.generatePlans(zones, selectedCity);
       const climateData = await climateAnalyzer.analyzeClimateImpact(zones, selectedCity);
       const predictions = await climateAnalyzer.predictFutureClimate(selectedCity, zones);
+      
+      await climateAnalyzer.testConsistencyWithEnvironmentalData(selectedCity);
       
       const cityKey = selectedCity.id as keyof typeof temperaturePatterns;
       const tempData = temperaturePatterns[cityKey];
@@ -241,6 +248,7 @@ function App() {
               data={environmentalData} 
               cityCoordinates={selectedCity?.coordinates}
               cityName={selectedCity?.name}
+              selectedCity={selectedCity?.name || ''}
             />
           </div>
 
@@ -255,6 +263,12 @@ function App() {
             cityName={selectedCity?.name || ''}
             heatZones={heatZones}
           />
+
+                      <ModelPerformanceDashboard 
+              heatIslandPredictor={predictor}
+              climateAnalyzer={climateAnalyzer}
+              actionPlanGenerator={planGenerator}
+            />
         </div>
       </main>
 

@@ -1,3 +1,60 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Fix Leaflet map z-index issues */
+.leaflet-container {
+  z-index: 1 !important;
+}
+
+.leaflet-control-container {
+  z-index: 1000 !important;
+}
+
+.leaflet-popup {
+  z-index: 1001 !important;
+}
+
+/* Ensure our UI elements are above the map */
+.absolute {
+  z-index: 1000 !important;
+}
+
+/* Fix for Leaflet attribution */
+.leaflet-control-attribution {
+  z-index: 1000 !important;
+}
+
+/* Ensure popups are visible */
+.leaflet-popup-content-wrapper {
+  z-index: 1001 !important;
+}
+
+/* Fix for any overlapping issues */
+.leaflet-overlay-pane {
+  z-index: 400 !important;
+}
+
+.leaflet-marker-pane {
+  z-index: 600 !important;
+}
+
+.leaflet-tooltip-pane {
+  z-index: 650 !important;
+}
+
+.leaflet-popup-pane {
+  z-index: 700 !important;
+}
+
+/* Custom styles for better visibility */
+.map-ui-overlay {
+  z-index: 1000 !important;
+  pointer-events: auto !important;
+}
+
+/* Ensure buttons and controls are clickable */
+.map-controls {
+  z-index: 1000 !important;
+  pointer-events: auto !important;
+}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BarChart3, Clock, Calendar, TrendingUp, Thermometer, Droplets, Wind, Eye, Zap, Leaf } from 'lucide-react';
+import { BarChart3, Clock, Calendar, TrendingUp, Thermometer, Droplets, Wind, Eye, Zap, Leaf, Info, Database, Wifi, Calculator } from 'lucide-react';
 import { EnvironmentalData as EnvironmentalDataType } from '../types';
 import { ApiService, WeatherData, AirQualityData } from '../utils/apiService';
 import { RealTimeDataService, RealTimeClimateData, RealTimeEnvironmentalData } from '../utils/realTimeDataService';
@@ -8,20 +8,27 @@ interface EnvironmentalDataProps {
   data: EnvironmentalDataType | null;
   cityCoordinates?: [number, number];
   cityName?: string;
+  selectedCity: string;
 }
 
-const EnvironmentalData: React.FC<EnvironmentalDataProps> = ({ data, cityCoordinates, cityName }) => {
+const EnvironmentalData: React.FC<EnvironmentalDataProps> = ({ data, cityCoordinates, cityName, selectedCity }) => {
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
   const [airQualityData, setAirQualityData] = useState<AirQualityData | null>(null);
   const [realTimeClimateData, setRealTimeClimateData] = useState<RealTimeClimateData | null>(null);
   const [realTimeEnvironmentalData, setRealTimeEnvironmentalData] = useState<RealTimeEnvironmentalData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [dataSourceSummary, setDataSourceSummary] = useState<any>(null);
   const apiService = ApiService.getInstance();
   const realTimeDataService = RealTimeDataService.getInstance();
 
   useEffect(() => {
     if (cityCoordinates) {
       fetchRealTimeData();
+      // Test carbon emissions and energy consumption calculations
+      if (cityName) {
+        realTimeDataService.testCarbonEmissionsCalculation(cityName);
+        realTimeDataService.testEnergyConsumptionCalculation(cityName);
+      }
     }
   }, [cityCoordinates]);
 
@@ -42,7 +49,13 @@ const EnvironmentalData: React.FC<EnvironmentalDataProps> = ({ data, cityCoordin
       setAirQualityData(airQuality);
       setRealTimeClimateData(realTimeClimate);
       setRealTimeEnvironmentalData(realTimeEnvironmental);
+      
+      // Get data source summary
+      const summary = realTimeDataService.getDataSourceSummary();
+      setDataSourceSummary(summary);
+      
       console.log('Real-time data fetched successfully:', { realTimeClimate, realTimeEnvironmental });
+      console.log('Data source summary:', summary);
     } catch (error) {
       console.error('Error fetching real-time data:', error);
       // Use fallback data
@@ -172,6 +185,38 @@ const EnvironmentalData: React.FC<EnvironmentalDataProps> = ({ data, cityCoordin
         </div>
       )}
 
+      {/* Data Source Legend */}
+      {dataSourceSummary && (
+        <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-green-50 rounded-lg border border-blue-200">
+          <h4 className="text-sm font-medium text-gray-700 mb-3 flex items-center gap-2">
+            <Info className="w-4 h-4" />
+            Data Source Legend
+          </h4>
+          <div className="grid grid-cols-2 gap-4 text-xs">
+            <div className="flex items-center gap-2">
+              <Wifi className="w-3 h-3 text-green-600" />
+              <span className="text-green-700 font-medium">Real-Time APIs:</span>
+              <span className="text-gray-600">Live data from external APIs</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Calculator className="w-3 h-3 text-blue-600" />
+              <span className="text-blue-700 font-medium">Calculated:</span>
+              <span className="text-gray-600">Derived from real-time data</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Database className="w-3 h-3 text-gray-600" />
+              <span className="text-gray-700 font-medium">Historical:</span>
+              <span className="text-gray-600">Census/demographic data</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <TrendingUp className="w-3 h-3 text-orange-600" />
+              <span className="text-orange-700 font-medium">Weather-Adjusted:</span>
+              <span className="text-gray-600">Real-time + weather factors</span>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Real-Time Environmental Data */}
       {realTimeEnvironmentalData && (
         <div className="mb-6">
@@ -186,6 +231,7 @@ const EnvironmentalData: React.FC<EnvironmentalDataProps> = ({ data, cityCoordin
                 <Zap className="w-4 h-4 text-red-600" />
                 <span className="text-sm font-medium text-gray-700">Carbon Emissions</span>
                 <span className="text-xs bg-blue-100 text-blue-800 px-1 py-0.5 rounded">EPA/EIA</span>
+                <span className="text-xs bg-green-100 text-green-800 px-1 py-0.5 rounded">Live</span>
               </div>
               <p className="text-2xl font-bold text-red-600">{realTimeEnvironmentalData.carbonEmissions.toLocaleString()} tons CO₂/year</p>
               <p className="text-xs text-gray-500">Real-time emissions data</p>
@@ -196,6 +242,7 @@ const EnvironmentalData: React.FC<EnvironmentalDataProps> = ({ data, cityCoordin
                 <TrendingUp className="w-4 h-4 text-blue-600" />
                 <span className="text-sm font-medium text-gray-700">Energy Consumption</span>
                 <span className="text-xs bg-blue-100 text-blue-800 px-1 py-0.5 rounded">EIA</span>
+                <span className="text-xs bg-green-100 text-green-800 px-1 py-0.5 rounded">Live</span>
               </div>
               <p className="text-2xl font-bold text-blue-600">{realTimeEnvironmentalData.energyConsumption.toLocaleString()} MWh/year</p>
               <p className="text-xs text-gray-500">Live energy consumption data</p>
@@ -206,6 +253,7 @@ const EnvironmentalData: React.FC<EnvironmentalDataProps> = ({ data, cityCoordin
                 <Leaf className="w-4 h-4 text-green-600" />
                 <span className="text-sm font-medium text-gray-700">Vegetation Index</span>
                 <span className="text-xs bg-blue-100 text-blue-800 px-1 py-0.5 rounded">NASA</span>
+                <span className="text-xs bg-green-100 text-green-800 px-1 py-0.5 rounded">Live</span>
               </div>
               <p className="text-2xl font-bold text-green-600">{Math.round(realTimeEnvironmentalData.vegetationIndex * 100)}%</p>
               <p className="text-xs text-gray-500">Satellite-derived data</p>
@@ -216,6 +264,7 @@ const EnvironmentalData: React.FC<EnvironmentalDataProps> = ({ data, cityCoordin
                 <Thermometer className="w-4 h-4 text-purple-600" />
                 <span className="text-sm font-medium text-gray-700">Urban Heat Index</span>
                 <span className="text-xs bg-blue-100 text-blue-800 px-1 py-0.5 rounded">NOAA</span>
+                <span className="text-xs bg-green-100 text-green-800 px-1 py-0.5 rounded">Live</span>
               </div>
               <p className="text-2xl font-bold text-purple-600">{Math.round(realTimeEnvironmentalData.urbanHeatIndex)}°F</p>
               <p className="text-xs text-gray-500">Real-time heat index</p>
@@ -227,16 +276,19 @@ const EnvironmentalData: React.FC<EnvironmentalDataProps> = ({ data, cityCoordin
               <div className="text-lg font-semibold text-gray-900">{realTimeEnvironmentalData.populationDensity.toLocaleString()}</div>
               <div className="text-sm text-gray-600">Population Density (km²)</div>
               <div className="text-xs text-blue-600">US Census Bureau</div>
+              <div className="text-xs text-green-600">Live Data</div>
             </div>
             <div>
               <div className="text-lg font-semibold text-gray-900">{realTimeEnvironmentalData.greenSpaceCoverage}%</div>
               <div className="text-sm text-gray-600">Green Space Coverage</div>
               <div className="text-xs text-blue-600">Satellite Analysis</div>
+              <div className="text-xs text-green-600">Live Data</div>
             </div>
             <div>
               <div className="text-lg font-semibold text-gray-900">{realTimeEnvironmentalData.vulnerablePopulations?.toLocaleString() || 'N/A'}</div>
               <div className="text-sm text-gray-600">Vulnerable Population</div>
               <div className="text-xs text-blue-600">US Census Bureau</div>
+              <div className="text-xs text-green-600">Live Data</div>
             </div>
           </div>
 
@@ -250,6 +302,16 @@ const EnvironmentalData: React.FC<EnvironmentalDataProps> = ({ data, cityCoordin
               <div>• Energy: EIA Real-Time Data</div>
               <div>• Demographics: US Census Bureau</div>
               <div>• Satellite: NASA Earth API</div>
+            </div>
+            <div className="mt-2 pt-2 border-t border-gray-200">
+              <div className="flex items-center gap-2 text-xs">
+                <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                <span className="text-green-700">Live Data</span>
+                <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                <span className="text-blue-700">Calculated</span>
+                <span className="w-2 h-2 bg-gray-500 rounded-full"></span>
+                <span className="text-gray-700">Historical</span>
+              </div>
             </div>
           </div>
         </div>

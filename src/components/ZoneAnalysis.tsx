@@ -55,7 +55,7 @@ export default function ZoneAnalysis({ selectedZone }: ZoneAnalysisProps) {
             <div className="text-sm text-gray-600">Current Temperature</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-red-600">+{selectedZone.predictions.temperatureIncrease}°F</div>
+            <div className="text-2xl font-bold text-red-600">+{selectedZone.predictions.temperatureIncrease.toFixed(1)}°F</div>
             <div className="text-sm text-gray-600">Heat Island Effect</div>
           </div>
         </div>
@@ -73,7 +73,7 @@ export default function ZoneAnalysis({ selectedZone }: ZoneAnalysisProps) {
                   style={{ width: `${selectedZone.predictions.riskScore}%` }}
                 />
               </div>
-              <span className="text-sm font-medium text-gray-900">{selectedZone.predictions.riskScore}%</span>
+              <span className="text-sm font-medium text-gray-900">{Math.round(selectedZone.predictions.riskScore)}%</span>
             </div>
           </div>
 

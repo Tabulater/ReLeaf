@@ -64,3 +64,20 @@ export interface ActionPlan {
     difficulty: 'easy' | 'moderate' | 'complex';
   };
 }
+
+export interface RealTimeEnvironmentalData {
+  carbonEmissions: number;
+  energyConsumption: number;
+  populationDensity: number;
+  vegetationIndex: number;
+  surfaceTemperature: number;
+  urbanHeatIndex: number;
+  airPollutionLevel: number;
+  noiseLevel: number;
+  trafficDensity: number;
+  greenSpaceCoverage: number;
+  buildingEnergyEfficiency: number;
+  vulnerablePopulations: number;
+  realTimeEmissions: number;
+  realTimeEnergy: number;
+}

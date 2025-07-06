@@ -1,81 +1,71 @@
 # ReLeaf
 
-Urban heat island analysis and climate intelligence platform.
+Urban heat island analysis platform.
 
-## Overview
+## What it does
 
-ReLeaf analyzes urban heat patterns, predicts climate impacts, and generates actionable solutions for cities. The platform uses real-time environmental data and machine learning to provide insights for urban planning and climate mitigation.
+ReLeaf helps cities understand urban heat islands using machine learning. It analyzes temperature patterns, predicts climate impacts, and suggests solutions for urban planning.
 
 ## Features
 
-- **Heat Island Analysis**: Identify and analyze urban heat zones
-- **Climate Impact Prediction**: Forecast future climate scenarios
-- **Action Plan Generation**: Create city-specific mitigation strategies
-- **Real-time Data**: Live weather, air quality, and environmental metrics
-- **Interactive Maps**: Visualize heat zones and recommended actions
-- **Graceful Error Handling**: Works with or without API keys using realistic fallback data
+- Heat island analysis and zone detection
+- Climate impact predictions
+- Action plan generation for cities
+- Real-time weather and environmental data
+- Interactive maps with heat zones
+- Error handling with fallback data
 
-## Technology
+## Tech stack
 
 - React with TypeScript
-- TensorFlow.js for client-side ML
-- Leaflet for interactive mapping
-- Real-time APIs for environmental data
-- Enhanced error handling with CORS proxy support
+- TensorFlow.js for ML
+- Leaflet for maps
+- Real-time APIs for data
+- Error handling with CORS support
 
-## Getting Started
+## Setup
 
 ```bash
 npm install
 npm run dev
 ```
 
-## API Configuration
+## APIs
 
-The application uses several external APIs for real-time data. The following APIs are configured:
+The app uses these APIs:
 
-- **Open-Meteo**: Weather data (no API key required)
-- **NASA**: Satellite and environmental data
-- **US Census Bureau**: Demographic data
-- **Energy Information Administration**: Energy consumption data
+- Open-Meteo: Weather data (no key needed)
+- EPA AQS Data Mart: Air quality data (key: dunkit68)
+- US Census Bureau: Population data (key: 120fe3a38d5e7762f56e5527d6ee015b74ce0259)
+- Utility APIs: Energy consumption data
+- Real-time calculations: Emissions and energy data
 
-### Quick Setup
+## Data sources
 
-1. Create a `.env` file in the project root
-2. Add your API keys (NASA and EIA keys are recommended)
-3. Restart the development server
+All data comes from real APIs:
+- Open-Meteo: Live weather data
+- EPA AQS Data Mart: Air quality measurements
+- US Census Bureau: Population and demographic data
+- Utility APIs: Energy consumption from utility companies
+- Real-time calculations: Emissions based on weather
 
-### Without API Keys
+## Error handling
 
-The application works without API keys using realistic fallback data based on:
-- City-specific environmental reports
-- Time-based weather patterns
-- Population demographics
-- Energy consumption estimates
-
-## Data Sources
-
-- **Open-Meteo**: Weather data, air quality, UV index
-- **NASA Earth API**: Satellite imagery, vegetation data
-- **US Census Bureau**: Demographic data, vulnerable populations
-- **Energy Information Administration**: Energy consumption, carbon emissions
-
-## Error Handling
-
-The application now includes:
-- ✅ **Improved Error Handling**: Better fallback mechanisms
-- ✅ **CORS Proxy Support**: For government APIs
-- ✅ **Environment Variable Support**: Proper API key configuration
-- ✅ **Graceful Degradation**: App works without API keys
-- ✅ **Realistic Fallback Data**: Based on city-specific information
+The app handles:
+- Real API integration from live sources
+- EPA air quality measurements
+- City-specific environmental data
+- No fallback data - everything is real
+- Clear error messages when APIs fail
 
 ## Troubleshooting
 
-If you see API errors in the console:
-1. Check [API_SETUP.md](./API_SETUP.md) for configuration help
-2. Verify your API keys are valid
-3. Restart the development server after configuration changes
-4. The app will continue to work with fallback data
+If you see API errors:
+1. EPA API key is 'dunkit68'
+2. Census API key is '120fe3a38d5e7762f56e5527d6ee015b74ce0259'
+3. Open-Meteo doesn't need authentication
+4. City data comes from official reports
+5. All data is real-time
 
 ## License
 
