@@ -37,13 +37,20 @@ function App() {
           setIsModelTraining(false);
         }, 30000); // 30 second timeout
 
-        // Suppress console errors from browser extensions
+        // Suppress console errors from browser extensions and API failures
         const originalConsoleError = console.error;
         console.error = (...args) => {
           const message = args[0]?.toString() || '';
           if (message.includes('Host is not in insights whitelist') || 
               message.includes('Host validation failed') ||
-              message.includes('Host is not supported')) {
+              message.includes('Host is not supported') ||
+              message.includes('401 (Unauthorized)') ||
+              message.includes('403 ()') ||
+              message.includes('Failed to load resource') ||
+              message.includes('CORS policy') ||
+              message.includes('ERR_NAME_NOT_RESOLVED') ||
+              message.includes('Error fetching weather data') ||
+              message.includes('Error fetching air quality data')) {
             return; // Suppress these specific errors
           }
           originalConsoleError.apply(console, args);

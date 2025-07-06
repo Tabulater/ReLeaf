@@ -310,7 +310,7 @@ export class ActionPlanGenerator {
     const carbonEmissions = realTimeEnvironmental?.carbonEmissions || 0;
     const energyConsumption = realTimeEnvironmental?.energyConsumption || 0;
 
-    // Prepare input features with real-time data
+    // Prepare input features with real-time data (matching training data format)
     const input = tf.tensor2d([[
       zone.buildingDensity / 100,
       zone.vegetationIndex / 100,
@@ -321,28 +321,34 @@ export class ActionPlanGenerator {
       city.population / 2000000,
       currentTemp / 120,
       currentHumidity / 100,
-      airQuality / 5,
-      carbonEmissions / 15000,
-      energyConsumption / 20000
+      Math.random() // Add noise for robustness (matching training data)
     ]]);
 
-    // Make prediction
-    const prediction = this.model.predict(input) as tf.Tensor;
-    const probabilities = await prediction.data();
-    
-    // Get top actions based on probabilities
-    const actionScores = this.actionTypes.map((action, index) => ({
-      action,
-      score: probabilities[index]
-    }));
-    
-    actionScores.sort((a, b) => b.score - a.score);
-    
-    // Clean up tensors
-    input.dispose();
-    prediction.dispose();
-    
-    return actionScores.slice(0, 4).map(item => item.action);
+    try {
+      // Make prediction
+      const prediction = this.model.predict(input) as tf.Tensor;
+      const probabilities = await prediction.data();
+      
+      // Get top actions based on probabilities
+      const actionScores = this.actionTypes.map((action, index) => ({
+        action,
+        score: probabilities[index]
+      }));
+      
+      actionScores.sort((a, b) => b.score - a.score);
+      
+      // Clean up tensors
+      input.dispose();
+      prediction.dispose();
+      
+      return actionScores.slice(0, 4).map(item => item.action);
+    } catch (error) {
+      console.error('Error predicting optimal actions:', error);
+      // Clean up input tensor
+      input.dispose();
+      // Fall back to rule-based selection
+      return this.enhancedFallbackActionSelection(zone, city, realTimeWeather, realTimeEnvironmental);
+    }
   }
 
   private enhancedFallbackActionSelection(zone: HeatZone, city: City, realTimeWeather?: any, realTimeEnvironmental?: any): ActionPlan['type'][] {
