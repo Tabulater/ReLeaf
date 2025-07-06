@@ -50,11 +50,10 @@ export class ClimateImpactAnalyzer {
   }
 
   async initialize() {
-    // Create neural network for climate impact prediction
     this.model = tf.sequential({
       layers: [
         tf.layers.dense({ 
-          inputShape: [12], // Heat zone data + city characteristics
+          inputShape: [12],
           units: 64, 
           activation: 'relu' 
         }),
@@ -87,39 +86,33 @@ export class ClimateImpactAnalyzer {
   }
 
   private generateTrainingData() {
-    // Generate realistic climate impact training data based on research
     const trainingData: ClimateTrainingPoint[] = [];
     
     const patterns = [
-      // High-impact urban areas
       {
         avgZoneTemp: 95, zoneCount: 8, criticalZones: 3, population: 2000000,
         vegetationCoverage: 15, coastalDistance: 50, elevation: 100,
         buildingDensity: 85, imperviousSurface: 80, energyUse: 12000,
         carbonFootprint: 8500, healthRisk: 0.8, climateImpact: 0.9
       },
-      // Medium-impact suburban areas
       {
         avgZoneTemp: 85, zoneCount: 5, criticalZones: 1, population: 800000,
         vegetationCoverage: 35, coastalDistance: 200, elevation: 300,
         buildingDensity: 60, imperviousSurface: 55, energyUse: 8000,
         carbonFootprint: 5500, healthRisk: 0.5, climateImpact: 0.6
       },
-      // Low-impact green cities
       {
         avgZoneTemp: 75, zoneCount: 3, criticalZones: 0, population: 400000,
         vegetationCoverage: 65, coastalDistance: 400, elevation: 500,
         buildingDensity: 35, imperviousSurface: 30, energyUse: 5000,
         carbonFootprint: 3200, healthRisk: 0.2, climateImpact: 0.3
       },
-      // Industrial high-emission areas
       {
         avgZoneTemp: 90, zoneCount: 6, criticalZones: 4, population: 1200000,
         vegetationCoverage: 10, coastalDistance: 150, elevation: 80,
         buildingDensity: 75, imperviousSurface: 85, energyUse: 15000,
         carbonFootprint: 12000, healthRisk: 0.9, climateImpact: 0.95
       },
-      // Coastal vulnerable cities
       {
         avgZoneTemp: 82, zoneCount: 7, criticalZones: 2, population: 1500000,
         vegetationCoverage: 25, coastalDistance: 5, elevation: 10,
@@ -128,7 +121,6 @@ export class ClimateImpactAnalyzer {
       }
     ];
 
-    // Generate variations
     patterns.forEach(pattern => {
       for (let i = 0; i < 100; i++) {
         const variation = {
@@ -147,7 +139,6 @@ export class ClimateImpactAnalyzer {
           climateImpact: pattern.climateImpact + (Math.random() - 0.5) * 0.2
         };
         
-        // Ensure realistic bounds
         variation.avgZoneTemp = Math.max(65, Math.min(110, variation.avgZoneTemp));
         variation.zoneCount = Math.max(1, Math.min(15, variation.zoneCount));
         variation.criticalZones = Math.max(0, Math.min(variation.zoneCount, variation.criticalZones));
@@ -225,7 +216,6 @@ export class ClimateImpactAnalyzer {
       return this.fallbackClimateAnalysis(heatZones, city);
     }
 
-    // Get real-time environmental data for accurate analysis
     let realTimeData: RealTimeEnvironmentalData | null = null;
     try {
       realTimeData = await this.realTimeDataService.getRealTimeEnvironmentalData(
@@ -241,7 +231,6 @@ export class ClimateImpactAnalyzer {
     const criticalZones = heatZones.filter(zone => zone.severity === 'critical').length;
     const highRiskZones = heatZones.filter(zone => zone.severity === 'high' || zone.severity === 'critical').length;
 
-    // Use real-time data when available, otherwise use city data
     const inputs: ClimateInputs = {
       avgZoneTemp,
       zoneCount: heatZones.length,
@@ -250,10 +239,10 @@ export class ClimateImpactAnalyzer {
       vegetationCoverage: realTimeData?.greenSpaceCoverage || city.vegetationCoverage,
       coastalDistance: city.coastalDistance,
       elevation: city.elevation,
-      buildingDensity: realTimeData?.trafficDensity ? realTimeData.trafficDensity * 0.8 : 70, // Estimate from traffic
+      buildingDensity: realTimeData?.trafficDensity ? realTimeData.trafficDensity * 0.8 : 70,
       imperviousSurface: 100 - (realTimeData?.greenSpaceCoverage || city.vegetationCoverage),
-      energyUse: realTimeData?.realTimeEnergy || realTimeData?.energyConsumption || (city.population * 0.015), // Real energy data
-      carbonFootprint: realTimeData?.realTimeEmissions || realTimeData?.carbonEmissions || (city.population * 0.012), // Real emissions data
+      energyUse: realTimeData?.realTimeEnergy || realTimeData?.energyConsumption || (city.population * 0.015),
+      carbonFootprint: realTimeData?.realTimeEmissions || realTimeData?.carbonEmissions || (city.population * 0.012),
       healthRisk: realTimeData?.airPollutionLevel ? realTimeData.airPollutionLevel / 100 : 0.5
     };
 
@@ -261,12 +250,11 @@ export class ClimateImpactAnalyzer {
     const recommendations = this.generateRecommendations(heatZones, city, impactScore);
     const futurePredictions = await this.predictFutureClimate(city, heatZones);
 
-    // Use real data for all metrics
     const carbonFootprint = realTimeData?.realTimeEmissions || realTimeData?.carbonEmissions || (city.population * 0.012);
     const energyConsumption = realTimeData?.realTimeEnergy || realTimeData?.energyConsumption || (city.population * 0.015);
     const healthRiskScore = realTimeData?.airPollutionLevel ? realTimeData.airPollutionLevel / 100 : 0.5;
-    const economicImpact = (impactScore * city.population * 0.001); // Economic impact per capita
-    const vulnerablePopulations = realTimeData?.vulnerablePopulations || Math.round(city.population * (0.1 + impactScore * 0.2)); // Real vulnerable population data
+    const economicImpact = (impactScore * city.population * 0.001);
+    const vulnerablePopulations = realTimeData?.vulnerablePopulations || Math.round(city.population * (0.1 + impactScore * 0.2));
     const infrastructureRisk = realTimeData?.urbanHeatIndex ? Math.round(realTimeData.urbanHeatIndex / 10) : Math.round(impactScore * 100);
     const biodiversityImpact = 1 - (realTimeData?.greenSpaceCoverage || city.vegetationCoverage) / 100;
 
@@ -384,7 +372,6 @@ export class ClimateImpactAnalyzer {
     const criticalZones = heatZones.filter(zone => zone.severity === 'critical').length;
     const highRiskZones = heatZones.filter(zone => zone.severity === 'high' || zone.severity === 'critical').length;
 
-    // City-specific recommendation database
     const citySpecificRecommendations = {
       phoenix: [
         {
@@ -598,15 +585,12 @@ export class ClimateImpactAnalyzer {
       ]
     };
 
-    // Get city-specific recommendations or generate dynamic ones
     let cityRecommendations: ClimateRecommendation[] = citySpecificRecommendations[cityId as keyof typeof citySpecificRecommendations] || [];
     
     if (cityRecommendations.length === 0) {
-      // Generate dynamic recommendations based on city characteristics
       cityRecommendations = this.generateDynamicRecommendations(city, heatZones, impactScore);
     }
 
-    // Add impact-based recommendations
     if (impactScore > 0.7) {
       cityRecommendations.push({
         category: 'mitigation',
@@ -635,7 +619,6 @@ export class ClimateImpactAnalyzer {
       } as ClimateRecommendation);
     }
 
-    // Add standard recommendations with city-specific customization
     cityRecommendations.push({
       category: 'mitigation',
       priority: impactScore > 0.5 ? 'high' : 'medium',
@@ -662,7 +645,6 @@ export class ClimateImpactAnalyzer {
     const coastalDistance = city.coastalDistance;
     const elevation = city.elevation;
 
-    // Generate recommendations based on city characteristics
     if (avgTemp > 85) {
       recommendations.push({
         category: 'mitigation',
