@@ -144,27 +144,36 @@ export class HeatIslandPredictor {
 
     // Train the model with reduced epochs for faster loading
     console.log('Training heat island prediction model...');
-    const history = await this.model!.fit(xs, ys, {
-      epochs: 20, // Reduced from 100 to 20 for faster training
-      batchSize: 32,
-      validationSplit: 0.2,
-      callbacks: {
-        onEpochEnd: (epoch, logs) => {
-          if (epoch % 5 === 0) { // Show progress more frequently
-            console.log(`Epoch ${epoch}: loss = ${logs?.loss?.toFixed(4)}, val_loss = ${logs?.val_loss?.toFixed(4)}`);
+    try {
+      const history = await this.model!.fit(xs, ys, {
+        epochs: 20, // Reduced from 100 to 20 for faster training
+        batchSize: 32,
+        validationSplit: 0.2,
+        callbacks: {
+          onEpochEnd: (epoch, logs) => {
+            if (epoch % 5 === 0) { // Show progress more frequently
+              console.log(`Epoch ${epoch}: loss = ${logs?.loss?.toFixed(4)}, val_loss = ${logs?.val_loss?.toFixed(4)}`);
+            }
           }
         }
-      }
-    });
+      });
 
-    this.isTrained = true;
-    console.log('Model training completed!');
-    
-    // Clean up tensors
-    xs.dispose();
-    ys.dispose();
-    
-    return history;
+      this.isTrained = true;
+      console.log('Model training completed!');
+      
+      // Clean up tensors
+      xs.dispose();
+      ys.dispose();
+      
+      return history;
+    } catch (error) {
+      console.error('Error training heat island model:', error);
+      // Clean up tensors even if training fails
+      xs.dispose();
+      ys.dispose();
+      this.isTrained = false;
+      throw error;
+    }
   }
 
   async predictTemperatureIncrease(

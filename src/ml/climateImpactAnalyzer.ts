@@ -188,26 +188,35 @@ export class ClimateImpactAnalyzer {
     const ys = tf.tensor2d(labels, [labels.length, 1]);
 
     console.log('Training climate impact prediction model...');
-    const history = await this.model!.fit(xs, ys, {
-      epochs: 15, // Reduced from 150 to 15 for faster training
-      batchSize: 32,
-      validationSplit: 0.2,
-      callbacks: {
-        onEpochEnd: (epoch, logs) => {
-          if (epoch % 3 === 0) { // Show progress more frequently
-            console.log(`Epoch ${epoch}: loss = ${logs?.loss?.toFixed(4)}`);
+    try {
+      const history = await this.model!.fit(xs, ys, {
+        epochs: 15, // Reduced from 150 to 15 for faster training
+        batchSize: 32,
+        validationSplit: 0.2,
+        callbacks: {
+          onEpochEnd: (epoch, logs) => {
+            if (epoch % 3 === 0) { // Show progress more frequently
+              console.log(`Epoch ${epoch}: loss = ${logs?.loss?.toFixed(4)}`);
+            }
           }
         }
-      }
-    });
+      });
 
-    this.isTrained = true;
-    console.log('Climate impact model training completed!');
-    
-    xs.dispose();
-    ys.dispose();
-    
-    return history;
+      this.isTrained = true;
+      console.log('Climate impact model training completed!');
+      
+      xs.dispose();
+      ys.dispose();
+      
+      return history;
+    } catch (error) {
+      console.error('Error training climate impact model:', error);
+      // Clean up tensors even if training fails
+      xs.dispose();
+      ys.dispose();
+      this.isTrained = false;
+      throw error;
+    }
   }
 
   async analyzeClimateImpact(heatZones: HeatZone[], city: City): Promise<ClimateImpact> {
