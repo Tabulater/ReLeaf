@@ -189,12 +189,12 @@ export class ClimateImpactAnalyzer {
 
     console.log('Training climate impact prediction model...');
     const history = await this.model!.fit(xs, ys, {
-      epochs: 150,
+      epochs: 15, // Reduced from 150 to 15 for faster training
       batchSize: 32,
       validationSplit: 0.2,
       callbacks: {
         onEpochEnd: (epoch, logs) => {
-          if (epoch % 30 === 0) {
+          if (epoch % 3 === 0) { // Show progress more frequently
             console.log(`Epoch ${epoch}: loss = ${logs?.loss?.toFixed(4)}`);
           }
         }

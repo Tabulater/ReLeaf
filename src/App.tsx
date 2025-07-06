@@ -31,6 +31,24 @@ function App() {
   useEffect(() => {
     const initializeModels = async () => {
       try {
+        // Set a timeout to prevent infinite loading
+        const timeoutId = setTimeout(() => {
+          console.warn('Model training timeout, proceeding with fallback models');
+          setIsModelTraining(false);
+        }, 30000); // 30 second timeout
+
+        // Suppress console errors from browser extensions
+        const originalConsoleError = console.error;
+        console.error = (...args) => {
+          const message = args[0]?.toString() || '';
+          if (message.includes('Host is not in insights whitelist') || 
+              message.includes('Host validation failed') ||
+              message.includes('Host is not supported')) {
+            return; // Suppress these specific errors
+          }
+          originalConsoleError.apply(console, args);
+        };
+
         await predictor.initialize();
         await planGenerator.initialize();
         await climateAnalyzer.initialize();
@@ -44,7 +62,11 @@ function App() {
         await climateAnalyzer.trainModel();
         setTrainingProgress(100);
         
+        clearTimeout(timeoutId);
         setIsModelTraining(false);
+        
+        // Restore original console.error
+        console.error = originalConsoleError;
       } catch (error) {
         console.error('Error training models:', error);
         setIsModelTraining(false);
@@ -52,7 +74,7 @@ function App() {
     };
 
     initializeModels();
-  }, [predictor, planGenerator]);
+  }, [predictor, planGenerator, climateAnalyzer]);
 
   const handleCitySelect = (city: City) => {
     setSelectedCity(city);

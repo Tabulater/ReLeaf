@@ -147,15 +147,15 @@ export class ActionPlanGenerator {
     const xs = tf.tensor2d(features);
     const ys = tf.tensor2d(labels);
 
-    // Train the model
-    console.log('Training action plan generation model with real-time data...');
+    // Train the model with reduced epochs for faster loading
+    console.log('Training action plan generation model...');
     const history = await this.model!.fit(xs, ys, {
-      epochs: 150,
+      epochs: 15, // Reduced from 150 to 15 for faster training
       batchSize: 32,
       validationSplit: 0.2,
       callbacks: {
         onEpochEnd: (epoch, logs) => {
-          if (epoch % 30 === 0) {
+          if (epoch % 3 === 0) { // Show progress more frequently
             console.log(`Epoch ${epoch}: loss = ${logs?.loss?.toFixed(4)}, accuracy = ${logs?.accuracy?.toFixed(4)}`);
           }
         }

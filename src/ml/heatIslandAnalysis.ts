@@ -142,15 +142,15 @@ export class HeatIslandPredictor {
     const xs = tf.tensor2d(features);
     const ys = tf.tensor2d(labels, [labels.length, 1]);
 
-    // Train the model
-    console.log('Training heat island prediction model with live weather data...');
+    // Train the model with reduced epochs for faster loading
+    console.log('Training heat island prediction model...');
     const history = await this.model!.fit(xs, ys, {
-      epochs: 100,
+      epochs: 20, // Reduced from 100 to 20 for faster training
       batchSize: 32,
       validationSplit: 0.2,
       callbacks: {
         onEpochEnd: (epoch, logs) => {
-          if (epoch % 20 === 0) {
+          if (epoch % 5 === 0) { // Show progress more frequently
             console.log(`Epoch ${epoch}: loss = ${logs?.loss?.toFixed(4)}, val_loss = ${logs?.val_loss?.toFixed(4)}`);
           }
         }
@@ -306,7 +306,10 @@ export class HeatIslandPredictor {
         noiseLevel: 60,
         trafficDensity: 50,
         greenSpaceCoverage: 25,
-        buildingEnergyEfficiency: 80
+        buildingEnergyEfficiency: 80,
+        vulnerablePopulations: 15,
+        realTimeEmissions: 7000,
+        realTimeEnergy: 10000
       };
     }
     
