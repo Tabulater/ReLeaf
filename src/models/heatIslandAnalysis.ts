@@ -1,7 +1,7 @@
 import { City, HeatZone } from '../types';
 import * as tf from '@tensorflow/tfjs';
-import { ApiService } from '../utils/apiService';
-import { RealTimeDataService, RealTimeClimateData, RealTimeEnvironmentalData } from '../utils/realTimeDataService';
+import { ApiService } from '../services/apiService';
+import { RealTimeDataService, RealTimeClimateData, RealTimeEnvironmentalData } from '../services/realTimeDataService';
 
 export class HeatIslandPredictor {
   private model: tf.Sequential | null = null;

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Brain, TrendingUp, AlertTriangle, CheckCircle, Activity, BarChart3, Target, Zap } from 'lucide-react';
-import { HeatIslandPredictor } from '../ml/heatIslandAnalysis';
-import { ClimateImpactAnalyzer } from '../ml/climateImpactAnalyzer';
-import { ActionPlanGenerator } from '../ml/actionPlanGenerator';
+import { HeatIslandPredictor } from '../models/heatIslandAnalysis';
+import { ClimateImpactAnalyzer } from '../models/climateImpactAnalyzer';
+import { ActionPlanGenerator } from '../models/actionPlanGenerator';
 
 interface ModelPerformanceDashboardProps {
   heatIslandPredictor: HeatIslandPredictor;

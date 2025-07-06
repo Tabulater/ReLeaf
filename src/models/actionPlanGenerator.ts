@@ -1,6 +1,6 @@
-import { ActionPlan, HeatZone, City } from '../types';
+import { HeatZone, City, ActionPlan } from '../types';
 import * as tf from '@tensorflow/tfjs';
-import { RealTimeDataService } from '../utils/realTimeDataService';
+import { RealTimeDataService } from '../services/realTimeDataService';
 
 // Model performance metrics interface
 interface ModelPerformanceMetrics {

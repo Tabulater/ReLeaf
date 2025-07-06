@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TrendingUp, AlertTriangle, DollarSign, Users, Leaf, Zap, Clock, Target, CheckCircle, ArrowUpRight, Heart } from 'lucide-react';
-import { ClimateImpact, ClimatePrediction } from '../ml/climateImpactAnalyzer';
+import { ClimateImpact, ClimatePrediction } from '../models/climateImpactAnalyzer';
 
 interface ClimateImpactAnalysisProps {
   climateImpact: ClimateImpact | null;

@@ -1,7 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import App from './App.tsx';
-import './index.css';
+import App from './pages/App.tsx';
+import './styles/index.css';
 import 'leaflet/dist/leaflet.css';
 
 // Fix for Leaflet marker icons in React-Leaflet

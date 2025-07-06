@@ -3,8 +3,8 @@ import { MapContainer, TileLayer, Polygon, Marker, Popup, Rectangle } from 'reac
 import { LatLngExpression } from 'leaflet';
 import { Thermometer, AlertTriangle, TreePine, Building, MapPin, Brain } from 'lucide-react';
 import { HeatZone, City, ActionPlan } from '../types';
-import { HeatIslandPredictor } from '../ml/heatIslandAnalysis';
-import { RealTimeDataService } from '../utils/realTimeDataService';
+import { HeatIslandPredictor } from '../models/heatIslandAnalysis';
+import { RealTimeDataService } from '../services/realTimeDataService';
 
 interface HeatMapProps {
   city: City | null;

@@ -1,7 +1,7 @@
 import * as tf from '@tensorflow/tfjs';
 import { HeatZone, City } from '../types';
-import { ApiService } from '../utils/apiService';
-import { RealTimeDataService, RealTimeClimateData, RealTimeEnvironmentalData } from '../utils/realTimeDataService';
+import { ApiService } from '../services/apiService';
+import { RealTimeDataService, RealTimeClimateData, RealTimeEnvironmentalData } from '../services/realTimeDataService';
 
 export interface ClimateImpact {
   carbonFootprint: number;

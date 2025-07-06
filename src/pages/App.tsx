@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Leaf, Brain, MapPin, TrendingUp, Thermometer, Zap, Target, BarChart3 } from 'lucide-react';
-import CitySelector from './components/CitySelector';
-import HeatMap from './components/HeatMap';
-import ZoneAnalysis from './components/ZoneAnalysis';
-import EnvironmentalData from './components/EnvironmentalData';
-import ActionPlans from './components/ActionPlans';
-import ClimateImpactAnalysis from './components/ClimateImpactAnalysis';
-import ModelPerformanceDashboard from './components/ModelPerformanceDashboard';
-import { City, HeatZone, EnvironmentalData as EnvData, ActionPlan } from './types';
-import { HeatIslandPredictor } from './ml/heatIslandAnalysis';
-import { ActionPlanGenerator } from './ml/actionPlanGenerator';
-import { ClimateImpactAnalyzer } from './ml/climateImpactAnalyzer';
-import { temperaturePatterns } from './data/realCityData';
+import CitySelector from '../components/CitySelector';
+import HeatMap from '../components/HeatMap';
+import ZoneAnalysis from '../components/ZoneAnalysis';
+import EnvironmentalData from '../components/EnvironmentalData';
+import ActionPlans from '../components/ActionPlans';
+import ClimateImpactAnalysis from '../components/ClimateImpactAnalysis';
+import ModelPerformanceDashboard from '../components/ModelPerformanceDashboard';
+import { City, HeatZone, EnvironmentalData as EnvData, ActionPlan } from '../types';
+import { HeatIslandPredictor } from '../models/heatIslandAnalysis';
+import { ActionPlanGenerator } from '../models/actionPlanGenerator';
+import { ClimateImpactAnalyzer } from '../models/climateImpactAnalyzer';
+import { temperaturePatterns } from '../data/realCityData';
 
 function App() {
   const [selectedCity, setSelectedCity] = useState<City | null>(null);

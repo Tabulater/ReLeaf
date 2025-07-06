@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { BarChart3, Clock, Calendar, TrendingUp, Thermometer, Droplets, Wind, Eye, Zap, Leaf, Info, Database, Wifi, Calculator } from 'lucide-react';
 import { EnvironmentalData as EnvironmentalDataType } from '../types';
-import { ApiService, WeatherData, AirQualityData } from '../utils/apiService';
-import { RealTimeDataService, RealTimeClimateData, RealTimeEnvironmentalData } from '../utils/realTimeDataService';
+import { ApiService, WeatherData, AirQualityData } from '../services/apiService';
+import { RealTimeDataService, RealTimeClimateData, RealTimeEnvironmentalData } from '../services/realTimeDataService';
 
 interface EnvironmentalDataProps {
   data: EnvironmentalDataType | null;
